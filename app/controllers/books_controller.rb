@@ -1,11 +1,20 @@
 class BooksController < ApplicationController
   before_action :set_book, only: %i[ show edit update destroy ]
 
+  def delete
+      @book = Book.find(params[:id])
+  end
+
+  
+#  def book_params
+#    params.require(:article).permit(:active, :id, :title, :body)
+#  end
+
   # GET /books or /books.json
   def index
     @books = Book.all
   end
-
+  
   # GET /books/1 or /books/1.json
   def show
   end
@@ -18,10 +27,12 @@ class BooksController < ApplicationController
   # GET /books/1/edit
   def edit
   end
+  
+
 
   # POST /books or /books.json
   def create
-    @book = Book.new(book_params)
+    @book = Book.new(title: params[:book][:title], author: params[:book][:author], price: params[:book][:price].to_f, publishedDate: params[:book][:publishedDate])
 
     respond_to do |format|
       if @book.save
@@ -37,7 +48,7 @@ class BooksController < ApplicationController
   # PATCH/PUT /books/1 or /books/1.json
   def update
     respond_to do |format|
-      if @book.update(book_params)
+      if @book.update(title: params[:book][:title], author: params[:book][:author], price: params[:book][:price].to_f, publishedDate: params[:book][:publishedDate])
         format.html { redirect_to book_url(@book), notice: "Book was successfully updated." }
         format.json { render :show, status: :ok, location: @book }
       else
@@ -49,6 +60,8 @@ class BooksController < ApplicationController
 
   # DELETE /books/1 or /books/1.json
   def destroy
+      
+      
     @book.destroy
 
     respond_to do |format|
@@ -56,15 +69,19 @@ class BooksController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  
 
+  # Use callbacks to share common setup or constraints between actions.
+  def set_book
+    @book = Book.find(params[:id])
+  end
+  
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_book
-      @book = Book.find(params[:id])
-    end
-
+  
     # Only allow a list of trusted parameters through.
     def book_params
       params.require(:book).permit(:title)
     end
+    
 end
